@@ -8,7 +8,8 @@ CORS(app)
 @app.route('/plot')
 def graph():
     import numpy as np
-    import matplotlib.pyplot
+    import matplotlib
+    import matplotlib.pyplot as plt
     from matplotlib.backends.backend_agg import FigureCanvasAgg
     from io import BytesIO
 
@@ -23,9 +24,19 @@ def graph():
 
         # plot
         matplotlib.use('agg')
-        fig, ax = matplotlib.pyplot.subplots()
+        fig = plt.figure(figsize=[8,6])
+        ax = fig.add_subplot(1,1,1)
         ax.plot(data[:,0], data[:,1])
-        ax.set_title('Plot')
+        
+        # plot range
+        # ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+
+        # title, labels
+        ax.set_title('Plot Title', size=20)
+        ax.set_xlabel('x-label', size=15)
+        ax.set_ylabel('y-label', size=15)
+        ax.tick_params(labelsize=15)
         
         # png data
         canvas = FigureCanvasAgg(fig)
