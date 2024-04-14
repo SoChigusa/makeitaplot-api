@@ -9,3 +9,4 @@ Requests==2.31.0
 setuptools==68.1.2
 typing_extensions==4.11.0
 watchdog==4.0.0
+Flask==3.0.0
