@@ -1,1 +1,11 @@
-Flask==3.0.0
+asgiref==3.8.1
+colorama==0.4.6
+cryptography==41.0.3
+importlib_metadata==7.0.1
+matplotlib==3.8.3
+numpy==1.24.3
+python-dotenv==1.0.1
+Requests==2.31.0
+setuptools==68.1.2
+typing_extensions==4.11.0
+watchdog==4.0.0
