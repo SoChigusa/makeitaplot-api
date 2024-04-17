@@ -26,7 +26,7 @@ def graph():
 
     # plot
     matplotlib.use('agg')
-    fig = plt.figure() if settings['fig']['size-no-specify'] else plt.figure(figsize=[settings['fig']['size'][0], settings['fig']['size'][1]])
+    fig = plt.figure() if not settings['fig']['size-specify'] else plt.figure(figsize=[settings['fig']['size'][0], settings['fig']['size'][1]])
     ax = fig.add_subplot(1,1,1)
     for plot in settings['plot']:
         ax.plot(data[:,plot['x']],
@@ -36,9 +36,9 @@ def graph():
             lw=plot['line-width'])
     
     # axis settings
-    if(not settings['x-axis']['lim-no-specify']):
+    if(settings['x-axis']['lim-specify']):
         ax.set_xlim(settings['x-axis']['lim'][0], settings['x-axis']['lim'][1])
-    if(not settings['y-axis']['lim-no-specify']):
+    if(settings['y-axis']['lim-specify']):
         ax.set_ylim(settings['y-axis']['lim'][0], settings['y-axis']['lim'][1])
     if(settings['x-axis']['log-scale']):
         ax.set_xscale('log')
@@ -46,7 +46,8 @@ def graph():
         ax.set_yscale('log')
 
     # title, labels
-    ax.set_title(settings['fig']['title'], size=settings['fig']['title-size'])
+    if(settings['fig']['title-specify']):
+        ax.set_title(settings['fig']['title'], size=settings['fig']['title-size'])
     ax.set_xlabel(settings['x-axis']['label'],
         size=settings['x-axis']['label-size'])
     ax.set_ylabel(settings['y-axis']['label'],
