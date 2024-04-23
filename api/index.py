@@ -29,8 +29,8 @@ def graph():
     fig = plt.figure() if not settings['fig']['size-specify'] else plt.figure(figsize=[settings['fig']['size'][0], settings['fig']['size'][1]])
     ax = fig.add_subplot(1,1,1)
     for plot in settings['plot']:
-        ax.plot(data[:,plot['x']],
-            data[:,plot['y']],
+        ax.plot(data[:,plot['x']-1],
+            data[:,plot['y']-1],
             color=plot['color'],
             ls=plot['line-style'],
             lw=plot['line-width'])
@@ -52,7 +52,7 @@ def graph():
         size=settings['x-axis']['label-size'])
     ax.set_ylabel(settings['y-axis']['label'],
         size=settings['y-axis']['label-size'])
-    ax.tick_params(labelsize=settings['tick']['label-size'])
+    ax.tick_params(labelsize=settings['ticks']['label-size'])
     
     # png data
     canvas = FigureCanvasAgg(fig)
