@@ -26,33 +26,33 @@ def graph():
 
     # plot
     matplotlib.use('agg')
-    fig = plt.figure() if not settings['fig']['size-specify'] else plt.figure(figsize=[settings['fig']['size'][0], settings['fig']['size'][1]])
+    fig = plt.figure() if not settings['fig']['sizeSpecify'] else plt.figure(figsize=[settings['fig']['size'][0], settings['fig']['size'][1]])
     ax = fig.add_subplot(1,1,1)
-    for plot in settings['plot']:
+    for plot in settings['plots']:
         ax.plot(data[:,plot['x']-1],
             data[:,plot['y']-1],
             color=plot['color'],
-            ls=plot['line-style'],
-            lw=plot['line-width'])
+            ls=plot['lineStyle'],
+            lw=plot['lineWidth'])
     
     # axis settings
-    if(settings['x-axis']['lim-specify']):
-        ax.set_xlim(settings['x-axis']['lim'][0], settings['x-axis']['lim'][1])
-    if(settings['y-axis']['lim-specify']):
-        ax.set_ylim(settings['y-axis']['lim'][0], settings['y-axis']['lim'][1])
-    if(settings['x-axis']['log-scale']):
+    if(settings['xAxis']['limSpecify']):
+        ax.set_xlim(settings['xAxis']['lim'][0], settings['xAxis']['lim'][1])
+    if(settings['yAxis']['limSpecify']):
+        ax.set_ylim(settings['yAxis']['lim'][0], settings['yAxis']['lim'][1])
+    if(settings['xAxis']['logScale']):
         ax.set_xscale('log')
-    if(settings['y-axis']['log-scale']):
+    if(settings['yAxis']['logScale']):
         ax.set_yscale('log')
 
     # title, labels
-    if(settings['fig']['title-specify']):
-        ax.set_title(settings['fig']['title'], size=settings['fig']['title-size'])
-    ax.set_xlabel(settings['x-axis']['label'],
-        size=settings['x-axis']['label-size'])
-    ax.set_ylabel(settings['y-axis']['label'],
-        size=settings['y-axis']['label-size'])
-    ax.tick_params(labelsize=settings['ticks']['label-size'])
+    if(settings['fig']['titleSpecify']):
+        ax.set_title(settings['fig']['title'], size=settings['fig']['titleSize'])
+    ax.set_xlabel(settings['xAxis']['label'],
+        size=settings['xAxis']['labelSize'])
+    ax.set_ylabel(settings['yAxis']['label'],
+        size=settings['yAxis']['labelSize'])
+    ax.tick_params(labelsize=settings['ticks']['labelSize'])
     
     # png data
     canvas = FigureCanvasAgg(fig)
