@@ -54,6 +54,9 @@ def graph():
         size=settings['yAxis']['labelSize'])
     ax.tick_params(labelsize=settings['ticks']['labelSize'])
     
+    # some adjustment
+    fig.tight_layout()
+
     # png data
     canvas = FigureCanvasAgg(fig)
     buf = BytesIO()
