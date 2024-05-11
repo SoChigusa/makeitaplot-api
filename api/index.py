@@ -32,7 +32,7 @@ def graph():
         ax.plot(data[:,plot['x']-1],
             data[:,plot['y']-1],
             color=plot['color'],
-            ls=plot['lineStyle'],
+            ls=plot['lineStyle']['spec'],
             lw=plot['lineWidth'],
             label=plot['legend'])
     
