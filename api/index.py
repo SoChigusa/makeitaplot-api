@@ -28,13 +28,18 @@ def graph():
     matplotlib.use('agg')
     fig = plt.figure() if not settings['fig']['sizeSpecify'] else plt.figure(figsize=[settings['fig']['size'][0], settings['fig']['size'][1]])
     ax = fig.add_subplot(1,1,1)
-    for plot in settings['plots']:
+    for plot in settings['plots']['plotList']:
         ax.plot(data[:,plot['x']-1],
             data[:,plot['y']-1],
             color=plot['color'],
             ls=plot['lineStyle'],
-            lw=plot['lineWidth'])
+            lw=plot['lineWidth'],
+            label=plot['legend'])
     
+    # plot legend
+    if(settings['plots']['legendFlag']):
+        ax.legend(loc=settings['plots']['legendLocation'], fontsize=settings['plots']['legendSize'])
+
     # axis settings
     if(settings['xAxis']['limSpecify']):
         ax.set_xlim(settings['xAxis']['lim'][0], settings['xAxis']['lim'][1])
