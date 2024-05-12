@@ -12,6 +12,7 @@ def graph():
     import matplotlib
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from matplotlib.backends.backend_pdf import FigureCanvasPdf
     from io import BytesIO
 
     # read file
@@ -62,17 +63,32 @@ def graph():
     # some adjustment
     fig.tight_layout()
 
-    # png data
-    canvas = FigureCanvasAgg(fig)
     buf = BytesIO()
-    canvas.print_png(buf)
-    png = buf.getvalue()
-    
-    # return as response
-    response = make_response(png)
-    response.headers['Content-Type'] = 'image/png'
-    response.headers['Content-Length'] = len(png)
-    return response
+    if(settings['imageType'] == 'png'):
+        
+        # png data
+        canvas = FigureCanvasAgg(fig)
+        canvas.print_png(buf)
+        png = buf.getvalue()
+
+        # return as response
+        response = make_response(png)
+        response.headers['Content-Type'] = 'image/png'
+        response.headers['Content-Length'] = len(png)
+        return response
+
+    elif(settings['imageType'] == 'pdf'):
+
+        # pdf data
+        canvas = FigureCanvasPdf(fig)
+        canvas.print_pdf(buf)
+        pdf = buf.getvalue()
+
+        # return as response
+        response = make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Length'] = len(pdf)
+        return response
 
 @app.route('/plot-vercel-blob')
 def graph2():
