@@ -36,7 +36,7 @@ def graph():
             ls=plot['lineStyle']['spec'],
             lw=plot['lineWidth'],
             label=plot['legend'])
-    
+
     # plot legend
     if(settings['plots']['legendFlag']):
         ax.legend(loc=settings['plots']['legendLocation'], fontsize=settings['plots']['legendSize'])
@@ -59,7 +59,7 @@ def graph():
     ax.set_ylabel(settings['yAxis']['label'],
         size=settings['yAxis']['labelSize'])
     ax.tick_params(labelsize=settings['ticks']['labelSize'])
-    
+
     # some adjustment
     fig.tight_layout()
 
@@ -89,6 +89,88 @@ def graph():
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Length'] = len(pdf)
         return response
+
+@app.route('/source', methods=['POST'])
+def source():
+    
+    # get file name
+    file_name_full = request.form['file_name']
+    file_name = file_name_full.split('.')[0]
+
+    # read settings file
+    files = request.files
+    settings_raw = files.get('settings').read()
+    settings = json.loads(settings_raw.decode('utf-8'))
+
+    # components
+    components = {}
+    if settings['fig']['sizeSpecify']:
+        components["figPreparation"] = "plt.figure(figsize=["+ str(settings['fig']['size'][0]) +","+ str(settings['fig']['size'][1]) +"])"
+    else:
+        components["figPreparation"] = "fig = plt.figure()"
+
+    s1 = [
+        "import numpy as np",
+        "import matplotlib.pyplot as plt",
+        "",
+        "# data input",
+        "data = np.loadtxt('" + file_name_full + "', delimiter='\\t', skiprows=0)",
+        "",
+        "# figure",
+        components["figPreparation"],
+        "ax = fig.add_subplot(1,1,1)",
+    ]
+    
+    s2 = ["", "# plot"]
+    for plot in settings['plots']['plotList']:
+        s2.append(
+            "ax.plot(data[:," + str(plot['x']-1) + "],"
+            "data[:," + str(plot['y']-1) + "],"
+            "color='" + plot['color'] + "',"
+            "ls='" + plot['lineStyle']['spec'] + "',"
+            "lw=" + str(plot['lineWidth']) + ","
+            "label='" + plot['legend'] + "')"
+        )
+
+    s3 = []
+    if(settings['plots']['legendFlag']):
+        s3 += [
+            "",
+            "# plot legend",
+            "ax.legend(loc='" + settings['plots']['legendLocation'] + "', fontsize=" + str(settings['plots']['legendSize']) + ")",
+        ]
+
+    s4 = ["", "# axis settings"]
+    if(settings['xAxis']['limSpecify']):
+        s4.append("ax.set_xlim(" + str(settings['xAxis']['lim'][0]) + ", " + str(settings['xAxis']['lim'][1]) + ")")
+    if(settings['yAxis']['limSpecify']):
+        s4.append("ax.set_ylim(" + str(settings['yAxis']['lim'][0]) + ", " + str(settings['yAxis']['lim'][1]) + ")")
+    if(settings['xAxis']['logScale']):
+        s4.append("ax.set_xscale('log')")
+    if(settings['yAxis']['logScale']):
+        s4.append("ax.set_yscale('log')")
+        
+    s5 = ["", "# title, labels"]
+    if(settings['fig']['titleSpecify']):
+        s5.append("ax.set_title(" + settings['fig']['title'] + ", size=" + str(settings['fig']['titleSize']) + ")")
+        
+    s6 = [
+        "ax.set_xlabel('" + settings['xAxis']['label'] + "', size=" + str(settings['xAxis']['labelSize']) + ")",
+        "ax.set_ylabel('" + settings['yAxis']['label'] + "', size=" + str(settings['yAxis']['labelSize']) + ")",
+        "ax.tick_params(labelsize=" + str(settings['ticks']['labelSize']) + ")",
+        "",
+        "# figure output",
+        "plt.tight_layout()",
+        "plt.savefig('" + file_name + ".pdf', bbox_inches='tight')"
+    ]
+
+    s = '\n'.join(s1 + s2 + s3 + s4 + s5 + s6)
+
+    # return as response
+    response = make_response(s)
+    response.headers['Content-Type'] = 'text/plain'
+    response.headers['Content-Length'] = len(s)
+    return response
 
 @app.route('/plot-vercel-blob')
 def graph2():
