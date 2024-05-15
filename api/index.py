@@ -22,7 +22,12 @@ def graph():
     data_raw = files.get('plot_data').read()
 
     # data processing
-    data = np.array([np.fromstring(line, sep='\t') for line in data_raw.splitlines()])
+    lines = data_raw.splitlines()
+    if settings['plots']['skiprows'] < len(lines):
+        lines = lines[settings['plots']['skiprows']:]
+    else:
+        print('[Error] Skiprows is larger than number of lines of data file')
+    data = np.array([np.fromstring(line, sep='\t') for line in lines])
     # print(data, file=sys.stderr)
 
     # plot
@@ -114,7 +119,7 @@ def source():
         "import matplotlib.pyplot as plt",
         "",
         "# data input",
-        "data = np.loadtxt('" + file_name_full + "', delimiter='\\t', skiprows=0)",
+        "data = np.loadtxt('" + file_name_full + "', delimiter='\\t', skiprows=" + str(settings['plots']['skiprows']) + ")",
         "",
         "# figure",
         components["figPreparation"],
